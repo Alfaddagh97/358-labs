@@ -1,0 +1,31 @@
+﻿@model IEnumerable<MyFirstApp.Models.Book>
+
+<h2>Book List</h2>
+
+<form asp-action="Index" method="get">
+    <p>
+        Search:
+        <input type="text" name="searchString"
+               value="@Context.Request.Query["searchString"]" />
+        <input type="submit" value="Search" />
+    </p>
+</form>
+
+<p>
+    <a asp-action="Create">Create New Book</a>
+</p>
+
+<ul>
+    @foreach (var book in Model)
+    {
+        <li>
+            @book.Title by @book.Author
+            |
+            <a asp-action="Details" asp-route-id="@book.Id">Details</a>
+            |
+            <a asp-action="Edit" asp-route-id="@book.Id">Edit</a>
+            |
+            <a asp-action="Delete" asp-route-id="@book.Id">Delete</a>
+        </li>
+    }
+</ul>
