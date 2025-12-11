@@ -13,9 +13,9 @@ namespace MyFirstApp.Controllers
                 "JohnDoe",
                 new CookieOptions
                 {
-                    Expires = DateTime.Now.AddMinutes(30), // Cookie expires in 30 minutes
-                    HttpOnly = true,                       // Not accessible from JavaScript
-                    IsEssential = true                     // Mark as essential
+                    Expires = DateTime.Now.AddMinutes(30),
+                    HttpOnly = true,
+                    IsEssential = true
                 });
 
             return Content("Cookie has been set.");
@@ -71,3 +71,4 @@ namespace MyFirstApp.Controllers
         }
     }
 }
+
