@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using MyfirstApp.Data;
 using MyFirstApp.Models;
+using Microsoft.AspNetCore.Http;
 
 namespace MyFirstApp
 {
@@ -10,22 +11,34 @@ namespace MyFirstApp
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-            var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
-            // Register Entity Framework + SQL Server
+            var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
+                ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+
+
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(connectionString));
 
-            // Register ASP.NET Core Identity (users, logins, etc.)
+
             builder.Services.AddDefaultIdentity<IdentityUser>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
-            // Add services to the container.
+
             builder.Services.AddControllersWithViews();
+
+
+            builder.Services.AddSession(options =>
+            {
+
+                options.IdleTimeout = TimeSpan.FromMinutes(20);
+
+                options.Cookie.HttpOnly = true;
+
+                options.Cookie.IsEssential = true;
+            });
 
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
             {
                 app.UseExceptionHandler("/Home/Error");
@@ -33,19 +46,21 @@ namespace MyFirstApp
             }
 
             app.UseHttpsRedirection();
+
             app.UseRouting();
+            app.UseSession();
 
             app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapStaticAssets();
+
             app.MapControllerRoute(
-                name: "default",
-                pattern: "{controller=Book}/{action=Index}/{id?}")
+                    name: "default",
+                    pattern: "{controller=Book}/{action=Index}/{id?}")
                 .WithStaticAssets();
 
             app.Run();
-
         }
     }
 }
